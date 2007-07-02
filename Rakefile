@@ -6,8 +6,8 @@ require 'rake/testtask'
 require "rake/gempackagetask"
 require 'spec/rake/spectask'
 
-PKG_VERSION = "1.0"
-PKG_NAME = "isbn"
+PKG_VERSION = "0.5"
+PKG_NAME = "rbook-pacstream"
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 RUBYFORGE_PROJECT = 'rbook'
 RUBYFORGE_USER = 'yob'
@@ -85,7 +85,6 @@ end
 
 desc "Generate a gem for rbook"
 Rake::GemPackageTask.new(spec) do |pkg|
-	pkg.need_zip = true
 	pkg.need_tar = true
 end
 
