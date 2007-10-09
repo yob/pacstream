@@ -35,9 +35,7 @@ module RBook
         raise ArgumentError, 'username and password must be specified'
       end
 
-      unless FILE_EXTENSIONS.include?(type)
-        raise ArgumentError, 'unrecognised type'
-      end    
+      raise ArgumentError, 'unrecognised type' unless FILE_EXTENSIONS.include?(type.to_sym)
 
       server = args[0][:servername] || "pacstream.tedis.com.au"
 
@@ -45,7 +43,7 @@ module RBook
         transaction_complete = false
         Net::FTP.open(server) do |ftp|
           
-            file_regexp = Regexp.new(".*\.#{FILE_EXTENSIONS[type]}$", Regexp::IGNORECASE)
+            file_regexp = Regexp.new(".*\.#{FILE_EXTENSIONS[type.to_sym]}$", Regexp::IGNORECASE)
             ftp.login(args[0][:username].to_s, args[0][:password].to_s)
             ftp.chdir("outgoing/")
             ftp.nlst.each do |file|
