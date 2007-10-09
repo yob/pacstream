@@ -6,7 +6,7 @@ require 'tempfile'
 module RBook
 
   # Ruby class for sending and retrieving electronic orders
-  # via pacstream, a service run by the ECN GRoup 
+  # via pacstream, a service run by the ECN Group 
   # (http://www.ecngroup.com.au/)
   #
   # = Basic Usage
@@ -16,10 +16,16 @@ module RBook
   #  end
   class Pacstream
       
-    FILE_EXTENSIONS = { :orders => "ORD" }
+    FILE_EXTENSIONS = { :orders => "ORD", :invoices => "ASN", :poacks => "POA" }
 
-    # Iterate over each order waiting on the pacstream server, returning
-    # each file as a string
+    # Iterate over each document waiting on the pacstream server, returning
+    # it as a string
+    #
+    # Document types available:
+    # 
+    # Purchase Orders (:orders)
+    # Purchase Order Acknowledgements (:poacks)
+    # Invoices (:invoices)
     #
     #  RBook::Pacstream.get(:orders, :username => "myusername", :password => "mypass") do |order|
     #    puts order
@@ -48,6 +54,7 @@ module RBook
                 tempfile.close
                 ftp.getbinaryfile(file, tempfile.path)
                 yield File.read(tempfile.path)
+                tempfile.unlink
               end
             end
             transaction_complete = true
@@ -59,6 +66,5 @@ module RBook
         raise "Error while communicating with the pacstream server"
       end
     end
-
   end
 end
