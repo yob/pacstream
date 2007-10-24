@@ -1,0 +1,11 @@
+v0.7.1
+- wrap the quit call in a rescue block. Sometimes the remote server closes the connection so quickly, Net::FTP freaks out when the socket closes, and we don't really care.
+
+v0.7
+- tightened up syntax
+- added support for sending files
+- can download POAs and Invoices
+
+v0.6
+- basic release
+- can download orders only

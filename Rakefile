@@ -6,7 +6,7 @@ require 'rake/testtask'
 require "rake/gempackagetask"
 require 'spec/rake/spectask'
 
-PKG_VERSION = "0.7"
+PKG_VERSION = "0.7.1"
 PKG_NAME = "rbook-pacstream"
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 RUBYFORGE_PROJECT = 'rbook'
@@ -70,12 +70,12 @@ spec = Gem::Specification.new do |spec|
 	spec.platform = Gem::Platform::RUBY
 	spec.summary = "A library for interaction with the PACSTREAM service"
 	spec.files =  Dir.glob("{examples,lib,specs}/**/**/*") +
-                      ["Rakefile"]
+                      ["Rakefile", "CHANGELOG", "COPYING", "README"]
   
   spec.require_path = "lib"
   spec.test_files = Dir[ "specs/**/*.rb" ]
 	spec.has_rdoc = true
-	spec.extra_rdoc_files = %w{README COPYING LICENSE}
+	spec.extra_rdoc_files = %w{README COPYING LICENSE CHANGELOG}
 	spec.rdoc_options << '--title' << 'pacstream Documentation' <<
 	                     '--main'  << 'README' << '-q'
   spec.add_dependency('rbook-isbn', '>= 1.0')

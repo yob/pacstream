@@ -126,7 +126,13 @@ module RBook
     # logout from the pacstream server
     def quit
       raise PacstreamCommandError, "No current session open" unless @ftp
-      @ftp.quit
+
+      begin
+        @ftp.quit
+      rescue Exception => e
+        # do nothing. Sometimes the server closes the connection and causes
+        # the ftp lib to freak out a little
+      end
     end
 
     # Deprecated way to download files from the pacstream server
