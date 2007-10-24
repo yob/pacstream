@@ -6,7 +6,7 @@ require 'rake/testtask'
 require "rake/gempackagetask"
 require 'spec/rake/spectask'
 
-PKG_VERSION = "0.6"
+PKG_VERSION = "0.7"
 PKG_NAME = "rbook-pacstream"
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 RUBYFORGE_PROJECT = 'rbook'
@@ -24,7 +24,13 @@ task :cruise => [ :spec, :spec_report, :doc ]
 desc "Run all rspec files"
 Spec::Rake::SpecTask.new("spec") do |t|
   t.spec_files = FileList['specs/**/*.rb']
-  t.rcov = true
+  
+  if RUBY_VERSION >= "1.8.6" && RUBY_PATCHLEVEL >= 110
+    t.rcov = false
+  else
+    t.rcov = true
+  end
+
   t.rcov_dir = (ENV['CC_BUILD_ARTIFACTS'] || 'doc') + "/rcov"
   t.rcov_opts = ["--exclude","spec.*\.rb"]
 end

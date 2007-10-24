@@ -21,7 +21,11 @@ module NotAMock
           :args   => args,
           :result => @methods[method]
         }
-        @methods[method]
+        if @methods[method].kind_of?(Exception)
+          raise @methods[method]
+        else
+          @methods[method]
+        end
       else
         raise NoMethodError.new("Undefined method #{method} called on #{inspect}")
       end

@@ -97,16 +97,46 @@ context "The pacstream class" do
     ftp.should have_received(:getbinaryfile).once
   end
 
-  # TODO: work out how to stub a method in the FTP lib and make it raise an exception
-  #specify "should raise an exception if incorrect login details are provided" do
+  specify "should download a file correctly when the alternative, block syntax is used" do
     # prevent a real ftp session from being opened. If the lib attempts to open
     # a connection, just return a stubbed class
-  #  ftp = Net::FTP.stub_instance(:login => lambda{ Net::FTPPermError}, :quit => true)
-  #  Net::FTP.stub_method(:new => ftp, :open => ftp)
+    ftp = Net::FTP.stub_instance(:login => true, :chdir => true, :nlst => ["1.ORD"], :getbinaryfile => true, :quit => true)
+    Net::FTP.stub_method(:new => ftp, :open => ftp)
+    File.stub_method(:read => "this is an order")
 
-  #  pac = RBook::Pacstream.new(@options)
-  #  lambda { pac.login }.should raise_error(RBook::PacstreamAuthError)
-  #end
+    RBook::Pacstream.open(@options) do |pac|
+      pac.get(:orders) do |ord|
+        ord.should eql("this is an order")
+      end
+    end
+
+    Net::FTP.should have_received(:open).once.with(@options[:servername])
+    ftp.should have_received(:login).once.with(@options[:username], @options[:password])
+    ftp.should have_received(:chdir).twice
+    ftp.should have_received(:nlst).once.without_args
+    ftp.should have_received(:getbinaryfile).once
+    ftp.should have_received(:quit).once.without_args
+  end
+
+  specify "should raise an exception if incorrect login details are provided" do
+    # prevent a real ftp session from being opened. If the lib attempts to open
+    # a connection, just return a stubbed class
+    ftp = Net::FTP.stub_instance(:login => Net::FTPPermError.new("530 incorrect login. not logged in."))
+    Net::FTP.stub_method(:new => ftp, :open => ftp)
+
+    pac = RBook::Pacstream.new(@options)
+    lambda { pac.login }.should raise_error(RBook::PacstreamAuthError)
+  end
+
+  specify "should raise an exception if an invalid server is provided" do
+    # prevent a real ftp session from being opened. If the lib attempts to open
+    # a connection, just return a stubbed class
+    ftp = Net::FTP.stub_instance(:login => SocketError.new("getaddrinfo: Name or service not known"))
+    Net::FTP.stub_method(:new => ftp, :open => ftp)
+
+    pac = RBook::Pacstream.new(@options)
+    lambda { pac.login }.should raise_error(RBook::PacstreamConnectionError)
+  end
 
   specify "should save an order to the server" do
     # prevent a real ftp session from being opened. If the lib attempts to open
@@ -118,7 +148,7 @@ context "The pacstream class" do
 
     pac = RBook::Pacstream.new(@options)
     pac.login
-    pac.put(:orders, 1, "order content")
+    pac.put(:order, 1, "order content")
     pac.quit
 
     ftp.should have_received(:chdir).twice
