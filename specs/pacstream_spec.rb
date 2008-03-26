@@ -76,6 +76,24 @@ context "The pacstream class" do
     ftp.should have_received(:getbinaryfile).once
   end
 
+  specify "should return an array of waiting files on request, and not attempt to download them" do
+    # prevent a real ftp session from being opened. If the lib attempts to open
+    # a connection, just return a stubbed class
+    # this stub will allow the user to call chdir, and pretends that there are two orders available
+    # for download
+    ftp = Net::FTP.stub_instance(:login => true, :chdir => true, :nlst => ["1.ORD","2.ORD"], :getbinaryfile => true, :quit => true)
+    Net::FTP.stub_method(:new => ftp, :open => ftp)
+
+    pac = RBook::Pacstream.new(@options)
+    pac.login
+    pac.list(:orders).should eql(["1.ORD","2.ORD"])
+    pac.quit
+
+    ftp.should have_received(:chdir).twice
+    ftp.should have_received(:nlst).once.without_args
+    ftp.should_not have_received(:getbinaryfile)
+  end
+
   specify "should return the contents of a POA when looping over all available poa's" do
     # prevent a real ftp session from being opened. If the lib attempts to open
     # a connection, just return a stubbed class

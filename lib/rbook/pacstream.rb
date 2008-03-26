@@ -48,7 +48,7 @@ module RBook
         raise ArgumentError, 'username and password must be specified'
       end
 
-      @server   = args[0][:servername].to_s || "pacstream.tedis.com.au"
+      @server   = (args[0][:servername] || "pacstream.tedis.com.au").to_s
       @username = args[0][:username].to_s
       @password = args[0][:password].to_s
     end
@@ -83,6 +83,30 @@ module RBook
       end
 
       @ftp.chdir("..")
+    end
+
+    # list all documents of a particular type available on the pacstream server
+    #
+    #   pac.list(:orders) do |order|
+    #     puts order
+    #   end
+    def list(type, &block)
+      raise PacstreamCommandError, "No current session open" unless @ftp
+      raise ArgumentError, 'unrecognised type' unless FILE_EXTENSIONS.include?(type.to_sym)
+
+      ret = []
+
+      # determine the filename pattern we're searching for
+      file_regexp = Regexp.new(".*\.#{FILE_EXTENSIONS[type.to_sym]}$", Regexp::IGNORECASE)
+      @ftp.chdir("outgoing/")
+
+      # loop over each file in the outgoing dir and check if it matches the file type we're after
+      @ftp.nlst.each do |file|
+        ret << file if file.match(file_regexp)
+      end
+
+      @ftp.chdir("..")
+      return ret
     end
 
     # logs into to the pacstream server. Can raise several exceptions
