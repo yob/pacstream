@@ -7,7 +7,9 @@ require File.dirname(__FILE__) + '/../lib/rbook/pacstream'
 
 counter = 0
 
-RBook::Pacstream.get(:orders, :username => "myusername", :password => "mypass") do |order|
-  File.open("#{counter.to_s}.ord", "w") { |f| f.puts order }
-  counter += 1
+RBook::Pacstream.open(:username => "myusername", :password => "mypass") do |pac|
+  pac.get(:orders) do |order|
+    File.open("#{counter.to_s}.ord", "w") { |f| f.puts order }
+    counter += 1
+  end
 end
