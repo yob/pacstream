@@ -1,5 +1,9 @@
+v0.7.2
+
 v0.7.1
-- wrap the quit call in a rescue block. Sometimes the remote server closes the connection so quickly, Net::FTP freaks out when the socket closes, and we don't really care.
+- wrap the quit call in a rescue block. Sometimes the remote server closes the 
+  connection so quickly, Net::FTP freaks out when the socket closes, and we 
+  really don't care.
 
 v0.7
 - tightened up syntax
