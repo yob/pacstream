@@ -6,8 +6,8 @@ require 'rake/testtask'
 require "rake/gempackagetask"
 require 'spec/rake/spectask'
 
-PKG_VERSION = "0.8"
-PKG_NAME = "rbook-pacstream"
+PKG_VERSION = "0.8.1"
+PKG_NAME = "pacstream"
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 RUBYFORGE_PROJECT = 'rbook'
 RUBYFORGE_USER = 'yob'

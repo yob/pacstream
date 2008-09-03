@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../vendor')
 
-require 'rbook/pacstream'
+require 'pacstream'
 require 'not_a_mock'
 require 'rubygems'
 require 'spec'
@@ -25,7 +25,7 @@ context "The pacstream class" do
     ftp = Net::FTP.stub_instance(:login => true, :quit => true)
     Net::FTP.stub_method(:new => ftp, :open => ftp)
 
-    pac = RBook::Pacstream.new(@options)
+    pac = Pacstream.new(@options)
     pac.login
     pac.quit
 
@@ -43,7 +43,7 @@ context "The pacstream class" do
     Net::FTP.stub_method(:new => ftp, :open => ftp)
     File.stub_method(:read => "this is an invoice")
 
-    pac = RBook::Pacstream.new(@options)
+    pac = Pacstream.new(@options)
     pac.login
     pac.get(:invoices) do |ord|
       ord.should eql("this is an invoice")
@@ -64,7 +64,7 @@ context "The pacstream class" do
     Net::FTP.stub_method(:new => ftp, :open => ftp)
     File.stub_method(:read => "this is an order")
 
-    pac = RBook::Pacstream.new(@options)
+    pac = Pacstream.new(@options)
     pac.login
     pac.get(:orders) do |ord|
       ord.should eql("this is an order")
@@ -84,7 +84,7 @@ context "The pacstream class" do
     ftp = Net::FTP.stub_instance(:login => true, :chdir => true, :nlst => ["1.ORD","2.ORD"], :getbinaryfile => true, :quit => true)
     Net::FTP.stub_method(:new => ftp, :open => ftp)
 
-    pac = RBook::Pacstream.new(@options)
+    pac = Pacstream.new(@options)
     pac.login
     pac.list(:orders).should eql(["1.ORD","2.ORD"])
     pac.quit
@@ -103,7 +103,7 @@ context "The pacstream class" do
     Net::FTP.stub_method(:new => ftp, :open => ftp)
     File.stub_method(:read => "this is a poa")
 
-    pac = RBook::Pacstream.new(@options)
+    pac = Pacstream.new(@options)
     pac.login
     pac.get(:poacks) do |ord|
       ord.should eql("this is a poa")
@@ -122,7 +122,7 @@ context "The pacstream class" do
     Net::FTP.stub_method(:new => ftp, :open => ftp)
     File.stub_method(:read => "this is an order")
 
-    RBook::Pacstream.open(@options) do |pac|
+    Pacstream.open(@options) do |pac|
       pac.get(:orders) do |ord|
         ord.should eql("this is an order")
       end
@@ -142,8 +142,8 @@ context "The pacstream class" do
     ftp = Net::FTP.stub_instance(:login => Net::FTPPermError.new("530 incorrect login. not logged in."))
     Net::FTP.stub_method(:new => ftp, :open => ftp)
 
-    pac = RBook::Pacstream.new(@options)
-    lambda { pac.login }.should raise_error(RBook::PacstreamAuthError)
+    pac = Pacstream.new(@options)
+    lambda { pac.login }.should raise_error(PacstreamAuthError)
   end
 
   specify "should raise an exception if an invalid server is provided" do
@@ -152,8 +152,8 @@ context "The pacstream class" do
     ftp = Net::FTP.stub_instance(:login => SocketError.new("getaddrinfo: Name or service not known"))
     Net::FTP.stub_method(:new => ftp, :open => ftp)
 
-    pac = RBook::Pacstream.new(@options)
-    lambda { pac.login }.should raise_error(RBook::PacstreamConnectionError)
+    pac = Pacstream.new(@options)
+    lambda { pac.login }.should raise_error(PacstreamConnectionError)
   end
 
   specify "should save an order to the server" do
@@ -164,7 +164,7 @@ context "The pacstream class" do
     ftp = Net::FTP.stub_instance(:login => true, :chdir => true, :putbinaryfile => true, :quit => true)
     Net::FTP.stub_method(:new => ftp, :open => ftp)
 
-    pac = RBook::Pacstream.new(@options)
+    pac = Pacstream.new(@options)
     pac.login
     pac.put(:order, 1, "order content")
     pac.quit
@@ -179,7 +179,7 @@ context "The pacstream class" do
     ftp = Net::FTP.stub_instance(:login => true, :quit => true)
     Net::FTP.stub_method(:new => ftp, :open => ftp)
 
-    pac = RBook::Pacstream.new(@options)
-    lambda { pac.quit }.should raise_error(RBook::PacstreamCommandError)
+    pac = Pacstream.new(@options)
+    lambda { pac.quit }.should raise_error(PacstreamCommandError)
   end
 end

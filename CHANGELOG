@@ -1,4 +1,6 @@
-v0.8.1
+v0.9
+- API INCOMPATIBLE CHANGE: Moved out of the RBook namespace
+  - gem was been rename 'pacstream' to prevent breakage of users apps
 - Add support for sending an receiving BISAC PO files
 
 v0.8
