@@ -1,0 +1,13 @@
+A small library to assist with sending and receiving electronic ordering
+data with PACSTREAM.
+
+Getting the order formats right is left to the user, this is just a 
+wrapper around Net::FTP that puts files the right spot, etc.
+
+I am not connected in any way with the owners of the PACSTREAM service,
+The ECN Group. I just work for a company that uses PACSTREAM to send and
+receive orders with other companies.
+
+The PACSTREAM brand is © 2007 The ECN Group
+
+Official Service Site: http://www.pacstream.com.au/
