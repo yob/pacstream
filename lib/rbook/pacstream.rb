@@ -40,8 +40,8 @@ module RBook
   #  end
   class Pacstream
       
-    FILE_EXTENSIONS = { :orders => "ORD", :invoices => "ASN", :poacks => "POA" }
-    FILE_EXTENSIONS_SINGULAR = { :order => "ORD", :invoice => "ASN", :poack => "POA" }
+    FILE_EXTENSIONS = { :bisac_orders => "BSC", :orders => "ORD", :invoices => "ASN", :poacks => "POA" }
+    FILE_EXTENSIONS_SINGULAR = { :bisac_order => "BSC", :order => "ORD", :invoice => "ASN", :poack => "POA" }
 
     def initialize(*args)
       if args[0][:username].nil? && args[0][:password].nil?
@@ -58,6 +58,8 @@ module RBook
     #   pac.get(:orders) do |order|
     #     puts order
     #   end
+    #
+    # Supported types: :bisac_orders, :orders, :invoices, :poacks
     #
     # WARNING: as soon as you download the order, the file is deleted from the server
     #          and cannot be retrieved again
@@ -126,7 +128,7 @@ module RBook
     end
 
     # upload a file to the pacstream server
-    # type    - :order, invoice or :poack
+    # type    - :bisac_order, :order, invoice or :poack
     # ref     - a reference number, used to name the file
     # content - the content to upload
     def put(type, ref, content)
